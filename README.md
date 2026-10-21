@@ -11,9 +11,24 @@ only after you save; an empty message aborts.
 
 Needs git 2.28 or newer.
 
-**Prebuilt binary** (macOS and Linux, amd64 and arm64): download the archive for
-your platform from [Releases](https://github.com/cjonesy/git-ai-commit/releases),
-check it against `checksums.txt`, and put `git-ai-commit` on your `PATH`.
+**Prebuilt binary** (macOS and Linux, amd64 and arm64):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/cjonesy/git-ai-commit/main/scripts/install.sh | bash
+```
+
+[`scripts/install.sh`](scripts/install.sh) downloads the latest
+[release](https://github.com/cjonesy/git-ai-commit/releases) for your platform,
+checks it against the release's `checksums.txt`, and installs it to
+`/usr/local/bin` (asking for sudo only if that isn't writable). Pass a version
+to install that one instead, or set `INSTALL_DIR` to install elsewhere:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/cjonesy/git-ai-commit/main/scripts/install.sh | bash -s -- 0.1.0
+curl -fsSL https://raw.githubusercontent.com/cjonesy/git-ai-commit/main/scripts/install.sh | INSTALL_DIR=~/.local/bin bash
+```
+
+The binaries are also attached to each release for manual download.
 
 **With Go** 1.27.3 or newer (an older Go downloads it automatically):
 
@@ -201,7 +216,7 @@ go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 ```
 
 CI runs these on every push to `main` and every pull request, testing on Linux
-and macOS with the latest Go, and builds the release archives as a dry run.
+and macOS with the latest Go, and builds the release binaries as a dry run.
 
 To release, create a GitHub release with a new semver tag (`v1.2.3`).
 Publishing it runs CI again, then [GoReleaser](https://goreleaser.com) builds

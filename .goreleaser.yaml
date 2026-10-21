@@ -15,16 +15,17 @@ builds:
       - -s -w -X main.version={{ .Version }}
     mod_timestamp: "{{ .CommitTimestamp }}" # reproducible binaries
 
+# Upload the bare binaries. Names carry no version, so
+# releases/latest/download/<name> always fetches the newest one.
 archives:
-  - formats: [tar.gz]
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    files: [README.md]
+  - formats: [binary]
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
 
 checksum:
   name_template: checksums.txt
 
 # The release already exists (creating it is what triggers the workflow), so
-# keep its notes and only attach the archives.
+# keep its notes and only attach the binaries.
 release:
   mode: keep-existing
 
