@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: git-ai-commit
+
+builds:
+  - main: ./cmd/git-ai-commit
+    binary: git-ai-commit
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+    mod_timestamp: "{{ .CommitTimestamp }}" # reproducible binaries
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files: [README.md]
+
+checksum:
+  name_template: checksums.txt
+
+# The release already exists (creating it is what triggers the workflow), so
+# keep its notes and only attach the archives.
+release:
+  mode: keep-existing
+
+changelog:
+  disable: true
