@@ -209,18 +209,25 @@ sitting where its `includeIf` line is. So keep the `includeIf` below any
 
 ## Development
 
+Tasks are in the `justfile` (needs [just](https://just.systems)); run `just` to
+list them.
+
 ```sh
-go test -race ./...
-golangci-lint run          # lint and format checks, configured in .golangci.yml
-go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+just check   # everything CI checks:
+just test    #   go test -race ./...
+just lint    #   go mod tidy -diff, golangci-lint (.golangci.yml), shellcheck
+just vuln    #   govulncheck
 ```
 
-CI runs these on every push to `main` and every pull request, testing on Linux
-and macOS with the latest Go, and builds the release binaries as a dry run.
+CI runs the same checks with the same tool versions on every push to `main` and
+every pull request, testing on Linux and macOS with the latest Go, and builds
+the release binaries as a dry run.
 
-To release, create a GitHub release with a new semver tag (`v1.2.3`).
-Publishing it runs CI again, then [GoReleaser](https://goreleaser.com) builds
-the binaries and attaches them to that release, keeping the notes you wrote.
+To release, run `just release 1.2.3` on an up-to-date, clean `main`. It
+publishes a GitHub release tagged `v1.2.3` (Go modules need the `v`) with
+generated notes. Publishing runs CI again, then
+[GoReleaser](https://goreleaser.com) builds the binaries and attaches them to
+that release. A release created by hand on GitHub works the same way.
 
 Everything that touches the repository goes through the git CLI (`internal/git`)
 rather than a library, so `git -c` overrides, include rules, hooks, the editor
