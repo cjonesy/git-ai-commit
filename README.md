@@ -7,6 +7,8 @@ server like Ollama), gets back a
 message, and opens it in your editor through `git commit`. The commit happens
 only after you save; an empty message aborts.
 
+![git ai-commit turning a staged change into a commit message](docs/demo.gif)
+
 ## Install
 
 Needs git 2.28 or newer.
@@ -217,6 +219,7 @@ just check   # everything CI checks:
 just test    #   go test -race ./...
 just lint    #   go mod tidy -diff, golangci-lint (.golangci.yml), shellcheck
 just vuln    #   govulncheck
+just demo    # re-record docs/demo.gif with VHS, using your ai-commit config
 ```
 
 CI runs the same checks with the same tool versions on every push to `main` and

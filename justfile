@@ -23,6 +23,52 @@ lint:
 vuln:
     go run {{ govulncheck }} ./...
 
+# Record docs/demo.gif with VHS (brew install vhs), using your ai-commit config
+demo:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v vhs >/dev/null || { echo "error: vhs isn't installed (brew install vhs)" >&2; exit 1; }
+    DEMO_DIR=$(mktemp -d)
+    export DEMO_DIR # the tape reads it
+    trap 'rm -rf "$DEMO_DIR"' EXIT
+
+    go build -o "$DEMO_DIR/bin/git-ai-commit" ./cmd/git-ai-commit
+    repo=$DEMO_DIR/repo
+    git init -q -b main "$repo"
+    git -C "$repo" config user.name Demo
+    git -C "$repo" config user.email demo@example.com
+    mkdir "$repo/weather"
+    cat > "$repo/weather/fetch.go" <<'EOF'
+    package weather
+
+    import "net/http"
+
+    // Fetch gets the forecast at url.
+    func Fetch(url string) (*http.Response, error) {
+    	return http.Get(url)
+    }
+    EOF
+    git -C "$repo" add .
+    git -C "$repo" commit -qm "feat(weather): add Fetch"
+    cat > "$repo/weather/fetch.go" <<'EOF'
+    package weather
+
+    import (
+    	"net/http"
+    	"time"
+    )
+
+    var client = &http.Client{Timeout: 10 * time.Second}
+
+    // Fetch gets the forecast at url, giving up after 10 seconds.
+    func Fetch(url string) (*http.Response, error) {
+    	return client.Get(url)
+    }
+    EOF
+    git -C "$repo" add .
+
+    vhs docs/demo.tape
+
 # Publish a release of main (`just release 0.1.0`); CI then attaches the binaries
 release version:
     #!/usr/bin/env bash
