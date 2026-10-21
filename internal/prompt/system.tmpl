@@ -28,7 +28,8 @@ the branch name. Leave it out rather than guess.
 Description: imperative mood, no trailing period, whole header at most 72 characters.
 Body: what changed and why, wrapped at 72 columns.
 Footers: `Token: value` or `Token #value`; tokens use hyphens instead of spaces (except
-`BREAKING CHANGE`).
+`BREAKING CHANGE`). Add a footer only when its value is known, such as an issue the hint
+or branch names; never invent issue numbers, reviewers or other footer values.
 
 If the author gives a hint, treat it as their stated intent and use it for the "why".
 
@@ -57,6 +58,3 @@ incoming responses other than from latest request.
 
 Remove timeouts which were used to mitigate the racing issue but are
 obsolete now.
-
-Reviewed-by: Z
-Refs: #123
